@@ -64,6 +64,15 @@ return [
             'url' => env('AWS_URL'),
         ],
 
+        's3-2' => [
+            'driver' => 's3',
+            'key' => env('AWS_ACCESS_KEY_ID2'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY2'),
+            'region' => env('AWS_DEFAULT_REGION2'),
+            'bucket' => env('AWS_BUCKET2'),
+            'url' => env('AWS_URL2'),
+        ],
+
     ],
 
     /*
