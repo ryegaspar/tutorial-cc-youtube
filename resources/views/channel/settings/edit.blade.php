@@ -8,7 +8,7 @@
                     <div class="card-header">Channel Settings</div>
 
                     <div class="card-body">
-                        <form action="/channel/{{ $channel->slug }}/edit" method="post">
+                        <form action="/channel/{{ $channel->slug }}/edit" method="post" enctype="multipart/form-data">
 
                             <div class="form-group row">
                                 <label for="name" class="col-md-2 col-form-label text-md-right">Name</label>
@@ -62,6 +62,18 @@
                                         <strong>{{ $message }}</strong>
                                     </span>
                                     @enderror
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="image"
+                                       class="col-md-2 col-form-label text-md-right">Channel Image</label>
+
+                                <div class="col-md-10">
+                                    <input id="image"
+                                           type="file"
+                                           class="form-control"
+                                           name="image">
                                 </div>
                             </div>
 
