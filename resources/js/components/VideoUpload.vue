@@ -14,7 +14,29 @@
                         />
 
                         <div id="video-form" v-if="uploading && !failed">
-                            Form
+                            <div class="form-group">
+                                <label for="title">Title</label>
+                                <input type="text" class="form-control" v-model="title" />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <textarea class="form-control" v-model="description"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="visibility">Visibility</label>
+                                <select class="form-control" v-model="visibility">
+                                    <option value="private">Private</option>
+                                    <option value="unlisted">Unlisted</option>
+                                    <option value="public">Public</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <span class="form-text float-right">{{ saveStatus }}</span>
+                                <button class="btn btn-primary" type="submit" @click.prevent="update">Save Changes</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -34,7 +56,8 @@
 				failed: false,
 				title: 'Untitled',
 				description: null,
-				visibility: 'private'
+				visibility: 'private',
+                saveStatus: null,
 			}
 		},
 
@@ -59,7 +82,25 @@
 				}).then((response) => {
 					this.uid = response.data.uid;
                 });
-			}
+			},
+
+            update() {
+				this.saveStatus = 'Saving changes.';
+
+				return axios.put(`/videos/${this.uid}`, {
+					title: this.title,
+                    description: this.description,
+                    visibility: this.visibility
+                }).then((response) => {
+                	this.saveStatus = 'Changes saved.';
+
+                	setTimeout(() => {
+                		this.saveStatus = null;
+                    }, 3000);
+                }).catch(() => {
+                	this.saveStatus = 'Failed to save changes.';
+                });
+            }
 		}
 	}
 </script>
