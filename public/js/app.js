@@ -1936,15 +1936,34 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      uid: null,
       uploading: false,
       uploadingComplete: false,
-      failed: false
+      failed: false,
+      title: 'Untitled',
+      description: null,
+      visibility: 'private'
     };
   },
   methods: {
     fileInputChange: function fileInputChange() {
       this.uploading = true;
       this.failed = false;
+      var file = document.getElementById('video').files[0];
+      this.file = file;
+      this.store().then(function () {});
+    },
+    store: function store() {
+      var _this = this;
+
+      return axios.post('/videos', {
+        title: this.title,
+        description: this.description,
+        visibility: this.visibility,
+        extension: this.file.name.split('.').pop()
+      }).then(function (response) {
+        _this.uid = response.data.uid;
+      });
     }
   }
 });

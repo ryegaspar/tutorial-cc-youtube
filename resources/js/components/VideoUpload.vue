@@ -28,17 +28,37 @@
 
 		data() {
 			return {
+				uid: null,
 				uploading: false,
-                uploadingComplete: false,
-                failed: false,
-            }
-        },
+				uploadingComplete: false,
+				failed: false,
+				title: 'Untitled',
+				description: null,
+				visibility: 'private'
+			}
+		},
 
 		methods: {
 			fileInputChange() {
 				this.uploading = true;
 				this.failed = false;
 
+				var file = document.getElementById('video').files[0];
+				this.file = file;
+
+				this.store().then(() => {
+				})
+			},
+
+			store() {
+				return axios.post('/videos', {
+					title: this.title,
+					description: this.description,
+					visibility: this.visibility,
+					extension: this.file.name.split('.').pop(),
+				}).then((response) => {
+					this.uid = response.data.uid;
+                });
 			}
 		}
 	}
