@@ -1955,6 +1955,34 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1965,19 +1993,39 @@ __webpack_require__.r(__webpack_exports__);
       title: 'Untitled',
       description: null,
       visibility: 'private',
-      saveStatus: null
+      saveStatus: null,
+      fileProgress: 0
     };
   },
   methods: {
     fileInputChange: function fileInputChange() {
+      var _this = this;
+
       this.uploading = true;
       this.failed = false;
       var file = document.getElementById('video').files[0];
       this.file = file;
-      this.store().then(function () {});
+      this.store().then(function () {
+        var form = new FormData();
+        form.append('video', _this.file);
+        form.append('uid', _this.uid);
+        axios.post('/upload', form, {
+          onUploadProgress: function onUploadProgress(e) {
+            if (e.lengthComputable) {
+              _this.updateProgress(e);
+            }
+          }
+        }).then(function () {
+          _this.uploadingComplete = true;
+        })["catch"](function () {
+          _this.failed = true;
+        });
+      })["catch"](function () {
+        _this.failed = true;
+      });
     },
     store: function store() {
-      var _this = this;
+      var _this2 = this;
 
       return axios.post('/videos', {
         title: this.title,
@@ -1985,11 +2033,11 @@ __webpack_require__.r(__webpack_exports__);
         visibility: this.visibility,
         extension: this.file.name.split('.').pop()
       }).then(function (response) {
-        _this.uid = response.data.uid;
+        _this2.uid = response.data.uid;
       });
     },
     update: function update() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.saveStatus = 'Saving changes.';
       return axios.put("/videos/".concat(this.uid), {
@@ -1997,13 +2045,17 @@ __webpack_require__.r(__webpack_exports__);
         description: this.description,
         visibility: this.visibility
       }).then(function (response) {
-        _this2.saveStatus = 'Changes saved.';
+        _this3.saveStatus = 'Changes saved.';
         setTimeout(function () {
-          _this2.saveStatus = null;
+          _this3.saveStatus = null;
         }, 3000);
       })["catch"](function () {
-        _this2.saveStatus = 'Failed to save changes.';
+        _this3.saveStatus = 'Failed to save changes.';
       });
+    },
+    updateProgress: function updateProgress(e) {
+      e.percent = e.loaded / e.total * 100;
+      this.fileProgress = e.percent;
     }
   }
 });
@@ -37394,131 +37446,208 @@ var render = function() {
                 })
               : _vm._e(),
             _vm._v(" "),
+            _vm.failed
+              ? _c(
+                  "div",
+                  {
+                    staticClass: "alert alert-danger",
+                    attrs: { role: "alert" }
+                  },
+                  [
+                    _vm._v(
+                      "\n                        Something went wrong. Please try again\n                    "
+                    )
+                  ]
+                )
+              : _vm._e(),
+            _vm._v(" "),
             _vm.uploading && !_vm.failed
-              ? _c("div", { attrs: { id: "video-form" } }, [
-                  _c("div", { staticClass: "form-group" }, [
-                    _c("label", { attrs: { for: "title" } }, [_vm._v("Title")]),
+              ? _c(
+                  "div",
+                  { staticClass: "mb-4", attrs: { id: "video-form" } },
+                  [
+                    !_vm.uploadingComplete
+                      ? _c(
+                          "div",
+                          {
+                            staticClass: "alert alert-info",
+                            attrs: { role: "alert" }
+                          },
+                          [
+                            _vm._v(
+                              "\n                            Your video will be available at\n                            "
+                            ),
+                            _vm._v(
+                              '=`${$root.url}/videos/${uid}` target="_blank">\n                                ' +
+                                _vm._s(_vm.$root.url) +
+                                "/videos/" +
+                                _vm._s(_vm.uid) +
+                                "\n                            "
+                            ),
+                            _vm._v(".\n                        ")
+                          ]
+                        )
+                      : _vm._e(),
                     _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.title,
-                          expression: "title"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      attrs: { type: "text" },
-                      domProps: { value: _vm.title },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.title = $event.target.value
-                        }
-                      }
-                    })
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "form-group" }, [
-                    _c("label", { attrs: { for: "description" } }, [
-                      _vm._v("Description")
-                    ]),
+                    _vm.uploadingComplete
+                      ? _c(
+                          "div",
+                          {
+                            staticClass: "alert alert-succeess",
+                            attrs: { role: "alert" }
+                          },
+                          [
+                            _vm._v(
+                              "\n                            Your upload is complete.  Your video is now processing.\n                            "
+                            ),
+                            _c("a", { attrs: { href: "#" } }, [
+                              _vm._v("Go to your video")
+                            ])
+                          ]
+                        )
+                      : _vm._e(),
                     _vm._v(" "),
-                    _c("textarea", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.description,
-                          expression: "description"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      domProps: { value: _vm.description },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.description = $event.target.value
-                        }
-                      }
-                    })
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "form-group" }, [
-                    _c("label", { attrs: { for: "visibility" } }, [
-                      _vm._v("Visibility")
-                    ]),
+                    !_vm.uploadingComplete
+                      ? _c("div", { staticClass: "progress" }, [
+                          _c("div", {
+                            staticClass: "progress-bar",
+                            style: { width: _vm.fileProgress + "%" },
+                            attrs: {
+                              role: "progressbar",
+                              "aria-valuenow": _vm.fileProgress,
+                              "aria-valuemin": "0",
+                              "aria-valuemax": "100"
+                            }
+                          })
+                        ])
+                      : _vm._e(),
                     _vm._v(" "),
-                    _c(
-                      "select",
-                      {
+                    _c("div", { staticClass: "form-group" }, [
+                      _c("label", { attrs: { for: "title" } }, [
+                        _vm._v("Title")
+                      ]),
+                      _vm._v(" "),
+                      _c("input", {
                         directives: [
                           {
                             name: "model",
                             rawName: "v-model",
-                            value: _vm.visibility,
-                            expression: "visibility"
+                            value: _vm.title,
+                            expression: "title"
                           }
                         ],
                         staticClass: "form-control",
+                        attrs: { type: "text" },
+                        domProps: { value: _vm.title },
                         on: {
-                          change: function($event) {
-                            var $$selectedVal = Array.prototype.filter
-                              .call($event.target.options, function(o) {
-                                return o.selected
-                              })
-                              .map(function(o) {
-                                var val = "_value" in o ? o._value : o.value
-                                return val
-                              })
-                            _vm.visibility = $event.target.multiple
-                              ? $$selectedVal
-                              : $$selectedVal[0]
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.title = $event.target.value
                           }
                         }
-                      },
-                      [
-                        _c("option", { attrs: { value: "private" } }, [
-                          _vm._v("Private")
-                        ]),
-                        _vm._v(" "),
-                        _c("option", { attrs: { value: "unlisted" } }, [
-                          _vm._v("Unlisted")
-                        ]),
-                        _vm._v(" "),
-                        _c("option", { attrs: { value: "public" } }, [
-                          _vm._v("Public")
-                        ])
-                      ]
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "form-group" }, [
-                    _c("span", { staticClass: "form-text float-right" }, [
-                      _vm._v(_vm._s(_vm.saveStatus))
+                      })
                     ]),
                     _vm._v(" "),
-                    _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-primary",
-                        attrs: { type: "submit" },
+                    _c("div", { staticClass: "form-group" }, [
+                      _c("label", { attrs: { for: "description" } }, [
+                        _vm._v("Description")
+                      ]),
+                      _vm._v(" "),
+                      _c("textarea", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.description,
+                            expression: "description"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        domProps: { value: _vm.description },
                         on: {
-                          click: function($event) {
-                            $event.preventDefault()
-                            return _vm.update($event)
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.description = $event.target.value
                           }
                         }
-                      },
-                      [_vm._v("Save Changes")]
-                    )
-                  ])
-                ])
+                      })
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group" }, [
+                      _c("label", { attrs: { for: "visibility" } }, [
+                        _vm._v("Visibility")
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "select",
+                        {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.visibility,
+                              expression: "visibility"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          on: {
+                            change: function($event) {
+                              var $$selectedVal = Array.prototype.filter
+                                .call($event.target.options, function(o) {
+                                  return o.selected
+                                })
+                                .map(function(o) {
+                                  var val = "_value" in o ? o._value : o.value
+                                  return val
+                                })
+                              _vm.visibility = $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            }
+                          }
+                        },
+                        [
+                          _c("option", { attrs: { value: "private" } }, [
+                            _vm._v("Private")
+                          ]),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "unlisted" } }, [
+                            _vm._v("Unlisted")
+                          ]),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "public" } }, [
+                            _vm._v("Public")
+                          ])
+                        ]
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group" }, [
+                      _c("span", { staticClass: "form-text float-right" }, [
+                        _vm._v(_vm._s(_vm.saveStatus))
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-primary",
+                          attrs: { type: "submit" },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.update($event)
+                            }
+                          }
+                        },
+                        [_vm._v("Save Changes\n                            ")]
+                      )
+                    ])
+                  ]
+                )
               : _vm._e()
           ])
         ])
@@ -49728,6 +49857,7 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 
 var app = new Vue({
   el: '#app',
+  data: window.codetube,
   components: {
     VideoUpload: _components_VideoUpload__WEBPACK_IMPORTED_MODULE_0__["default"]
   }

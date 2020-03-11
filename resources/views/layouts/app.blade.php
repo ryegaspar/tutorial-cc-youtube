@@ -18,6 +18,15 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+	<script>
+		window.codetube = {
+			url: '{{ config('app.url') }}',
+			user: {
+				id: {{ auth()->check() ? auth()->user()->id : null }},
+				authenticated: {{ auth()->check() ? true : false }},
+			}
+		}
+	</script>
 </head>
 <body>
     <div id="app">

@@ -29,6 +29,9 @@ import VideoUpload from "./components/VideoUpload";
 
 const app = new Vue({
     el: '#app',
+
+	data: window.codetube,
+
 	components: {
     	VideoUpload
 	}

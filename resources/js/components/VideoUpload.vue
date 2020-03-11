@@ -13,10 +13,37 @@
                                v-if="!uploading"
                         />
 
-                        <div id="video-form" v-if="uploading && !failed">
+                        <div class="alert alert-danger" v-if="failed" role="alert">
+                            Something went wrong. Please try again
+                        </div>
+
+                        <div id="video-form" v-if="uploading && !failed" class="mb-4">
+
+                            <div class="alert alert-info" v-if="!uploadingComplete" role="alert">
+                                Your video will be available at
+                                <a :href=`${$root.url}/videos/${uid}` target="_blank">
+                                    {{ $root.url }}/videos/{{ uid }}
+                                </a>.
+                            </div>
+
+                            <div class="alert alert-succeess" v-if="uploadingComplete" role="alert">
+                                Your upload is complete.  Your video is now processing.
+                                <a href="#">Go to your video</a>
+                            </div>
+
+                            <div class="progress" v-if="!uploadingComplete">
+                                <div class="progress-bar"
+                                     role="progressbar"
+                                     :style="{ width: fileProgress + '%' }"
+                                     :aria-valuenow="fileProgress"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100">
+                                </div>
+                            </div>
+
                             <div class="form-group">
                                 <label for="title">Title</label>
-                                <input type="text" class="form-control" v-model="title" />
+                                <input type="text" class="form-control" v-model="title"/>
                             </div>
 
                             <div class="form-group">
@@ -35,7 +62,8 @@
 
                             <div class="form-group">
                                 <span class="form-text float-right">{{ saveStatus }}</span>
-                                <button class="btn btn-primary" type="submit" @click.prevent="update">Save Changes</button>
+                                <button class="btn btn-primary" type="submit" @click.prevent="update">Save Changes
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -57,7 +85,8 @@
 				title: 'Untitled',
 				description: null,
 				visibility: 'private',
-                saveStatus: null,
+				saveStatus: null,
+                fileProgress: 0,
 			}
 		},
 
@@ -70,7 +99,25 @@
 				this.file = file;
 
 				this.store().then(() => {
-				})
+					var form = new FormData();
+
+					form.append('video', this.file);
+					form.append('uid', this.uid);
+
+					axios.post('/upload', form, {
+						onUploadProgress: (e) => {
+							if (e.lengthComputable) {
+								this.updateProgress(e);
+							}
+						}
+					}).then(() => {
+						this.uploadingComplete = true;
+                    }).catch(() => {
+                    	this.failed = true;
+                    });
+				}).catch(() => {
+					this.failed = true;
+                })
 			},
 
 			store() {
@@ -81,25 +128,30 @@
 					extension: this.file.name.split('.').pop(),
 				}).then((response) => {
 					this.uid = response.data.uid;
-                });
+				});
 			},
 
-            update() {
+			update() {
 				this.saveStatus = 'Saving changes.';
 
 				return axios.put(`/videos/${this.uid}`, {
 					title: this.title,
-                    description: this.description,
-                    visibility: this.visibility
-                }).then((response) => {
-                	this.saveStatus = 'Changes saved.';
+					description: this.description,
+					visibility: this.visibility
+				}).then((response) => {
+					this.saveStatus = 'Changes saved.';
 
-                	setTimeout(() => {
-                		this.saveStatus = null;
-                    }, 3000);
-                }).catch(() => {
-                	this.saveStatus = 'Failed to save changes.';
-                });
+					setTimeout(() => {
+						this.saveStatus = null;
+					}, 3000);
+				}).catch(() => {
+					this.saveStatus = 'Failed to save changes.';
+				});
+			},
+
+            updateProgress(e) {
+				e.percent = (e.loaded / e.total) * 100;
+				this.fileProgress = e.percent;
             }
 		}
 	}
