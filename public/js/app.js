@@ -2057,6 +2057,15 @@ __webpack_require__.r(__webpack_exports__);
       e.percent = e.loaded / e.total * 100;
       this.fileProgress = e.percent;
     }
+  },
+  mounted: function mounted() {
+    var _this4 = this;
+
+    window.onbeforeunload = function () {
+      if (_this4.uploading && !_this4.uploadingComplete && !_this4.failed) {
+        return 'Are you sure you want to navigate away?';
+      }
+    };
   }
 });
 
