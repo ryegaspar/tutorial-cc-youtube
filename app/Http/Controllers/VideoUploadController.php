@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\UploadVideo;
 use Illuminate\Http\Request;
 
 class VideoUploadController extends Controller
@@ -19,5 +20,11 @@ class VideoUploadController extends Controller
 
         $request->file('video')
             ->move(storage_path() . '/uploads', $video->video_filename);
+
+        $this->dispatch(new UploadVideo(
+            $video->video_filename
+        ));
+
+        return response()->json(null, 200);
     }
 }
