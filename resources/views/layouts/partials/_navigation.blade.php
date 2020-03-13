@@ -35,7 +35,8 @@
                         </a>
 
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{{ url('/channel/' . $channel->slug) }}">Your Channel</a>
+							<a class="dropdown-item" href="{{ url('/videos') }}">Your videos</a>
+							<a class="dropdown-item" href="{{ url('/channel/' . $channel->slug) }}">Your Channel</a>
                             <a class="dropdown-item" href="{{ url('/channel/' . $channel->slug . '/edit') }}">Channel Settings</a>
 
                             <a class="dropdown-item" href="{{ route('logout') }}"
