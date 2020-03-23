@@ -10,9 +10,18 @@ class VideoController extends Controller
 {
     public function index()
     {
-        $videos = auth()->user()->videos()->latestFirst()->get();
+        $videos = auth()->user()->videos()->latestFirst()->paginate(10);
 
         return view('video.index', compact('videos'));
+    }
+
+    public function edit(Video $video)
+    {
+        $this->authorize('edit', $video);
+
+        return view('video.edit', [
+            'video' => $video
+        ]);
     }
 
     public function update(VideoUpdateRequest $request, Video $video)
@@ -27,7 +36,7 @@ class VideoController extends Controller
             'allow_comments' => $request->has('allow_comments')
         ]);
 
-        if ($request->acceptsJson()) {
+        if ($request->wantsJson()) {
             return response(null, 200);
         }
 
