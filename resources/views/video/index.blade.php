@@ -30,8 +30,11 @@
 														@endif
 													</p>
 
-													<form action=""method="post">
+													<form action="/videos/{{ $video->uid }}" method="post">
+														@csrf
+														@method('delete')
 														<a href="/videos/{{ $video->uid }}/edit" class="btn btn-info">Edit</a>
+														<button type="submit" class="btn btn-danger">Delete</button>
 													</form>
 												</div>
 												<div class="col-sm-6">

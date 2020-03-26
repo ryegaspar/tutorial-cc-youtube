@@ -61,4 +61,13 @@ class VideoController extends Controller
             'uid' => $uid,
         ]);
     }
+
+    public function destroy(Video $video)
+    {
+        $this->authorize('delete', $video);
+
+        $video->delete();
+
+        return redirect()->back();
+    }
 }
