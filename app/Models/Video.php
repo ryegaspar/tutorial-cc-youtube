@@ -88,4 +88,9 @@ class Video extends Model
 
         return true;
     }
+
+    public function getStreamUrl()
+    {
+        return config('codetube.buckets.videos') . '/' . $this->video_id . '.mp4';
+    }
 }

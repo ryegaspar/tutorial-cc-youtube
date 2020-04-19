@@ -21,6 +21,7 @@ window.Vue = require('vue');
 
 // Vue.component('video-upload', require('./components/VideoUpload.vue'));
 import VideoUpload from "./components/VideoUpload";
+import VideoPlayer from "./components/VideoPlayer";
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -33,6 +34,7 @@ const app = new Vue({
 	data: window.codetube,
 
 	components: {
-    	VideoUpload
+    	VideoUpload,
+		VideoPlayer
 	}
 });
