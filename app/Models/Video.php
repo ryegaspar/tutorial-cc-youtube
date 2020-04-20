@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 
 class Video extends Model
 {
     use SoftDeletes;
+    use Searchable;
 
     protected $fillable = [
         'title',
