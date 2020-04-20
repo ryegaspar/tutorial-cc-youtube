@@ -15,7 +15,8 @@
     export default {
     	data() {
     		return {
-    			player: null
+    			player: null,
+                duration: 0
             }
         },
 
@@ -25,8 +26,32 @@
             thumbnailUrl: null
         },
 
-        ready() {
+        methods: {
+			hasHitQuotaView() {
+				if (!this.duration) {
+					return false;
+                }
+
+				return Math.round(this.player.currentTime()) == Math.round((10 * this.duration) / 100);
+            },
+
+            createView() {
+				axios.post(`/videos/${this.videoUid}/views`);
+            }
+        },
+
+        mounted() {
     		this.player = videojs('video');
+
+    		this.player.on('loadedmetadata', () => {
+    			this.duration = Math.round(this.player.duration());
+            });
+
+    		setInterval(() => {
+    			if (this.hasHitQuotaView()) {
+    				this.createView();
+                }
+            }, 1000)
         }
     }
 </script>

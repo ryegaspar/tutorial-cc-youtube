@@ -21,7 +21,7 @@
 				@if (!$video->isProcessed())
 					<div class="video-placeholder">
 						<div class="video-placeholder__header">
-							This video is processing.  Comeback a bit later.
+							This video is processing. Comeback a bit later.
 						</div>
 					</div>
 				@elseif(!$video->canBeAccessed(Auth::user()))
@@ -36,7 +36,9 @@
 					<div class="card-body">
 						<h4>{{ $video->title }}</h4>
 						<div class="float-right">
-							Video views
+							<div class="video__views">
+								{{ $video->viewCount() }} {{ Illuminate\Support\Str::plural('view', $video->viewCount()) }}
+							</div>
 						</div>
 						<div class="media">
 							<div class="media-left">
