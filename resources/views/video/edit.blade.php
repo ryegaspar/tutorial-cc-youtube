@@ -36,9 +36,7 @@
 								<div class="col-md-10">
 									<textarea id="description"
 											  class="form-control"
-											  name="description">
-										{{ old('description') ?: $video->description }}
-									</textarea>
+											  name="description">{{ old('description') ?: $video->description }}</textarea>
 								</div>
 							</div>
 

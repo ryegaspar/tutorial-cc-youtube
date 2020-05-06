@@ -15,16 +15,27 @@
 									<div class="media mb-2">
 										<div class="media-left mr-2">
 											<a href="/channel/{{ $channel->slug }}">
-												<img src="{{ $channel->getImage() }}" alt="{{ $channel->name }} image" class="media-object">
+												<img src="{{ $channel->getImage() }}" alt="{{ $channel->name }} image"
+													 class="media-object">
 											</a>
 										</div>
 										<div class="media-body">
-											<a href="/channel/{{ $channel->slug }}" class="media-heading">{{ $channel->name }}</a>
+											<a href="/channel/{{ $channel->slug }}"
+											   class="media-heading">{{ $channel->name }}</a>
 											subscription count
 										</div>
 									</div>
 								@endforeach
 							</div>
+						@endif
+
+						@if ($videos->count())
+							@foreach($videos as $video)
+								<div class="card card-body bg-light mb-3">
+									@include('video.partials._video_result', ['video' => $video])
+								</div>
+							@endforeach
+						@else
 						@endif
 					</div>
 				</div>
