@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Vote;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
@@ -104,5 +105,10 @@ class Video extends Model
     public function viewCount()
     {
         return $this->views->count();
+    }
+
+    public function votes()
+    {
+        return $this->morphMany(Vote::class, 'voteable');
     }
 }
