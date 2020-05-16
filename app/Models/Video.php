@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Vote;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
@@ -52,7 +51,7 @@ class Video extends Model
 
     public function getThumbnail()
     {
-        if (!$this->isProcessed()) {
+        if (! $this->isProcessed()) {
             return config('codetube.buckets.videos' . '/default_thumbnail.png');
         }
 
@@ -61,12 +60,12 @@ class Video extends Model
 
     public function votesAllowed()
     {
-        return (bool) $this->allow_votes;
+        return (bool)$this->allow_votes;
     }
 
     public function commentsAllowed()
     {
-        return (bool) $this->allow_comments;
+        return (bool)$this->allow_comments;
     }
 
     public function isPrivate()
@@ -81,7 +80,7 @@ class Video extends Model
 
     public function canBeAccessed($user = null)
     {
-        if (!$user && $this->isPrivate()) {
+        if (! $user && $this->isPrivate()) {
             return false;
         }
 
@@ -110,5 +109,20 @@ class Video extends Model
     public function votes()
     {
         return $this->morphMany(Vote::class, 'voteable');
+    }
+
+    public function upVotes()
+    {
+        return $this->votes->where('type', 'up');
+    }
+
+    public function downVotes()
+    {
+        return $this->votes->where('type', 'down');
+    }
+
+    public function voteFromUser(User $user)
+    {
+        return $this->votes()->where('user_id', $user->id);
     }
 }

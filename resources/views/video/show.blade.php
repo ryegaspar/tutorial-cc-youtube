@@ -39,6 +39,8 @@
 							<div class="video__views">
 								{{ $video->viewCount() }} {{ Illuminate\Support\Str::plural('view', $video->viewCount()) }}
 							</div>
+
+							<video-voting video-uid="{{ $video->uid }}"></video-voting>
 						</div>
 						<div class="media">
 							<div class="media-left">
