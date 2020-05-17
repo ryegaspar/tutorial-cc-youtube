@@ -73,7 +73,7 @@
 				<div class="card">
 					<div class="card-body">
 						@if ($video->commentsAllowed())
-							Comments
+							<video-comments video-uid="{{ $video->uid }}"></video-comments>
 						@else
 							<p>Comments are disabled</p>
 						@endif

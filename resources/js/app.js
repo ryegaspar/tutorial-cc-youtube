@@ -23,6 +23,7 @@ window.Vue = require('vue');
 import VideoUpload from "./components/VideoUpload";
 import VideoPlayer from "./components/VideoPlayer";
 import VideoVoting from "./components/VideoVoting";
+import VideoComments from "./components/VideoComments";
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -38,6 +39,7 @@ const app = new Vue({
 	components: {
     	VideoUpload,
 		VideoPlayer,
-		VideoVoting
+		VideoVoting,
+		VideoComments
 	}
 });
