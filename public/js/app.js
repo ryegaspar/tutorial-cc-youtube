@@ -3221,10 +3221,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      comments: []
+      comments: [],
+      body: null
     };
   },
   props: {
@@ -3236,6 +3245,17 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get("/videos/".concat(this.videoUid, "/comments")).then(function (response) {
         _this.comments = response.data.data;
+      });
+    },
+    createComment: function createComment() {
+      var _this2 = this;
+
+      axios.post("/videos/".concat(this.videoUid, "/comments"), {
+        body: this.body
+      }).then(function (response) {
+        _this2.comments.unshift(response.data.data);
+
+        _this2.body = null;
       });
     }
   },
@@ -96048,6 +96068,44 @@ var render = function() {
   return _c("div", [
     _c("p", [_vm._v(_vm._s(_vm.comments.length) + " comments")]),
     _vm._v(" "),
+    _vm.$root.user.authenticated
+      ? _c("div", { staticClass: "video-comment clearfix" }, [
+          _c("textarea", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.body,
+                expression: "body"
+              }
+            ],
+            staticClass: "form-control video-comment__input",
+            attrs: { placeholder: "Say something" },
+            domProps: { value: _vm.body },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.body = $event.target.value
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c("div", { staticClass: "float-right" }, [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-info",
+                attrs: { type: "submit" },
+                on: { click: _vm.createComment }
+              },
+              [_vm._v("Post")]
+            )
+          ])
+        ])
+      : _vm._e(),
+    _vm._v(" "),
     _c(
       "ul",
       { staticClass: "card-body" },
@@ -96083,7 +96141,7 @@ var render = function() {
               ),
               _c("p", [_vm._v(_vm._s(comment.body))]),
               _vm._v(" "),
-              _vm._l(_vm.comments.replies.data, function(reply) {
+              _vm._l(comment.replies.data, function(reply) {
                 return _c("div", { staticClass: "media" }, [
                   _c("div", { staticClass: "media-left" }, [
                     _c(
