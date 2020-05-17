@@ -40,4 +40,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/channel/{channel}/edit', 'ChannelSettingsController@edit');
     Route::put('/channel/{channel}/edit', 'ChannelSettingsController@update');
+
+    Route::post('/videos/{video}/votes', 'VideoVoteController@create');
+    Route::delete('/videos/{video}/votes', 'VideoVoteController@remove');
 });

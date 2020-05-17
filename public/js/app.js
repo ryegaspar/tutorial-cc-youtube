@@ -3431,6 +3431,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3452,6 +3460,30 @@ __webpack_require__.r(__webpack_exports__);
         _this.down = response.data.data.down;
         _this.userVote = response.data.data.user_vote;
         _this.canVote = response.data.data.can_vote;
+      });
+    },
+    vote: function vote(type) {
+      if (this.userVote == type) {
+        this[type]--;
+        this.userVote = null;
+        this.deleteVote(type);
+        return;
+      }
+
+      if (this.userVote) {
+        this[type == 'up' ? 'down' : 'up']--;
+      }
+
+      this[type]++;
+      this.userVote = type;
+      this.createVote(type);
+    },
+    deleteVote: function deleteVote(type) {
+      axios["delete"]("/videos/".concat(this.videoUid, "/votes"));
+    },
+    createVote: function createVote(type) {
+      axios.post("/videos/".concat(this.videoUid, "/votes"), {
+        type: type
       });
     }
   },
@@ -96230,7 +96262,13 @@ var render = function() {
       {
         staticClass: "video__voting-button",
         class: { "video__voting-button--voted": _vm.userVote === "up" },
-        attrs: { href: "#" }
+        attrs: { href: "#" },
+        on: {
+          click: function($event) {
+            $event.preventDefault()
+            return _vm.vote("up")
+          }
+        }
       },
       [_c("span", { staticClass: "fas fa-thumbs-up" })]
     ),
@@ -96240,7 +96278,13 @@ var render = function() {
       {
         staticClass: "video__voting-button",
         class: { "video__voting-button--voted": _vm.userVote === "down" },
-        attrs: { href: "#" }
+        attrs: { href: "#" },
+        on: {
+          click: function($event) {
+            $event.preventDefault()
+            return _vm.vote("down")
+          }
+        }
       },
       [_c("span", { staticClass: "fas fa-thumbs-down" })]
     ),
