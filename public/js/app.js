@@ -3229,11 +3229,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       comments: [],
-      body: null
+      body: null,
+      replyBody: null,
+      replyFormVisible: null
     };
   },
   props: {
@@ -3257,6 +3274,33 @@ __webpack_require__.r(__webpack_exports__);
 
         _this2.body = null;
       });
+    },
+    createReply: function createReply(commentId) {
+      var _this3 = this;
+
+      axios.post("/videos/".concat(this.videoUid, "/comments"), {
+        body: this.replyBody,
+        reply_id: commentId.id.toString()
+      }).then(function (response) {
+        _this3.comments.map(function (comment, index) {
+          if (comment.id === commentId) {
+            _this3.comments[index].replies.data.push(response.data.data);
+          }
+        });
+
+        _this3.replyBody = null;
+        _this3.replyFormVisible = null;
+      });
+    },
+    toggleReplyForm: function toggleReplyForm(commentId) {
+      this.replyBody = null;
+
+      if (this.replyFormVisible === commentId) {
+        this.replyFormVisible = null;
+        return;
+      }
+
+      this.replyFormVisible = commentId;
     }
   },
   mounted: function mounted() {
@@ -96098,7 +96142,12 @@ var render = function() {
               {
                 staticClass: "btn btn-info",
                 attrs: { type: "submit" },
-                on: { click: _vm.createComment }
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    return _vm.createComment($event)
+                  }
+                }
               },
               [_vm._v("Post")]
             )
@@ -96141,6 +96190,76 @@ var render = function() {
               ),
               _c("p", [_vm._v(_vm._s(comment.body))]),
               _vm._v(" "),
+              _c("ul", { staticClass: "list-inline" }, [
+                _vm.$root.user.authenticated
+                  ? _c("li", { staticClass: "list-inline-item" }, [
+                      _c(
+                        "a",
+                        {
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.toggleReplyForm(comment.id)
+                            }
+                          }
+                        },
+                        [
+                          _vm._v(
+                            _vm._s(
+                              _vm.replyFormVisible === comment.id
+                                ? "Cancel"
+                                : "Reply"
+                            )
+                          )
+                        ]
+                      )
+                    ])
+                  : _vm._e()
+              ]),
+              _vm._v(" "),
+              _vm.replyFormVisible === comment.id
+                ? _c("div", { staticClass: "video-comment clear" }, [
+                    _c("textarea", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.replyBody,
+                          expression: "replyBody"
+                        }
+                      ],
+                      staticClass: "form-control video-comment__input",
+                      domProps: { value: _vm.replyBody },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.replyBody = $event.target.value
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "float-right" }, [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-info",
+                          attrs: { type: "submit" },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.createReply(comment.id)
+                            }
+                          }
+                        },
+                        [_vm._v("Reply\n                        ")]
+                      )
+                    ])
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
               _vm._l(comment.replies.data, function(reply) {
                 return _c("div", { staticClass: "media" }, [
                   _c("div", { staticClass: "media-left" }, [
@@ -96165,16 +96284,16 @@ var render = function() {
                     _c(
                       "a",
                       {
-                        attrs: { href: "/channel/" + comment.channel.data.slug }
+                        attrs: { href: "/channel/" + reply.channel.data.slug }
                       },
-                      [_vm._v(_vm._s(comment.channel.data.name))]
+                      [_vm._v(_vm._s(reply.channel.data.name))]
                     ),
                     _vm._v(
                       " " +
                         _vm._s(comment.created_at_human) +
                         "\n                        "
                     ),
-                    _c("p", [_vm._v(_vm._s(comment.body))])
+                    _c("p", [_vm._v(_vm._s(reply.body))])
                   ])
                 ])
               })

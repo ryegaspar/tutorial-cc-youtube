@@ -6,7 +6,7 @@
             <textarea placeholder="Say something" class="form-control video-comment__input" v-model="body"></textarea>
 
             <div class="float-right">
-                <button type="submit" class="btn btn-info" @click="createComment">Post</button>
+                <button type="submit" class="btn btn-info" @click.prevent="createComment">Post</button>
             </div>
         </div>
 
@@ -24,6 +24,21 @@
                     comment.created_at_human }}
                     <p>{{ comment.body }}</p>
 
+                    <ul class="list-inline">
+                        <li class="list-inline-item" v-if="$root.user.authenticated">
+                            <a href="#" @click.prevent="toggleReplyForm(comment.id)">{{ replyFormVisible === comment.id
+                                ? 'Cancel' : 'Reply'}}</a>
+                        </li>
+                    </ul>
+
+                    <div class="video-comment clear" v-if="replyFormVisible === comment.id">
+                        <textarea class="form-control video-comment__input" v-model="replyBody"></textarea>
+                        <div class="float-right">
+                            <button type="submit" class="btn btn-info" @click.prevent="createReply(comment.id)">Reply
+                            </button>
+                        </div>
+                    </div>
+
                     <div class="media" v-for="reply in comment.replies.data">
                         <div class="media-left">
                             <a :href="`/channel/${reply.channel.data.slug}`">
@@ -33,9 +48,9 @@
                             </a>
                         </div>
                         <div class="media-body pl-3">
-                            <a :href="`/channel/${comment.channel.data.slug}`">{{ comment.channel.data.name }}</a> {{
+                            <a :href="`/channel/${reply.channel.data.slug}`">{{ reply.channel.data.name }}</a> {{
                             comment.created_at_human }}
-                            <p>{{ comment.body }}</p>
+                            <p>{{ reply.body }}</p>
                         </div>
                     </div>
                 </div>
@@ -48,7 +63,9 @@
 		data() {
 			return {
 				comments: [],
-				body: null
+				body: null,
+				replyBody: null,
+				replyFormVisible: null
 			}
 		},
 		props: {
@@ -69,6 +86,33 @@
 					this.comments.unshift(response.data.data);
 					this.body = null;
 				})
+			},
+
+			createReply(commentId) {
+				axios.post(`/videos/${this.videoUid}/comments`, {
+					body: this.replyBody,
+					reply_id: commentId.id.toString()
+				}).then((response) => {
+					this.comments.map((comment, index) => {
+						if (comment.id === commentId) {
+							this.comments[index].replies.data.push(response.data.data)
+                        }
+					});
+
+					this.replyBody = null;
+					this.replyFormVisible = null;
+				});
+			},
+
+			toggleReplyForm(commentId) {
+				this.replyBody = null;
+
+				if (this.replyFormVisible === commentId) {
+					this.replyFormVisible = null
+					return;
+				}
+
+				this.replyFormVisible = commentId;
 			}
 		},
 		mounted() {
