@@ -29,6 +29,11 @@
                             <a href="#" @click.prevent="toggleReplyForm(comment.id)">{{ replyFormVisible === comment.id
                                 ? 'Cancel' : 'Reply'}}</a>
                         </li>
+
+                        <li class="list-inline-item">
+                            <a href="#" v-if="$root.user.id === comment.user_id"
+                               @click.prevent="deleteComment(comment.id)">Delete</a>
+                        </li>
                     </ul>
 
                     <div class="video-comment clear" v-if="replyFormVisible === comment.id">
@@ -51,6 +56,14 @@
                             <a :href="`/channel/${reply.channel.data.slug}`">{{ reply.channel.data.name }}</a> {{
                             comment.created_at_human }}
                             <p>{{ reply.body }}</p>
+
+                            <ul class="list-inline">
+                                <li class="list-inline-item">
+                                    <a href="#" v-if="$root.user.id === reply.user_id"
+                                       @click.prevent="deleteComment(reply.id)">Delete</a>
+                                </li>
+                            </ul>
+
                         </div>
                     </div>
                 </div>
@@ -96,7 +109,7 @@
 					this.comments.map((comment, index) => {
 						if (comment.id === commentId) {
 							this.comments[index].replies.data.push(response.data.data)
-                        }
+						}
 					});
 
 					this.replyBody = null;
@@ -113,6 +126,33 @@
 				}
 
 				this.replyFormVisible = commentId;
+			},
+
+			deleteComment(itemId) {
+				if (!confirm('Are you sure you want to delete this comment?')) {
+					return;
+				}
+
+				axios.delete(`/videos/${this.videoUid}/comments/${itemId.id.toString()}`)
+					.then(() => {
+						this.deleteById(itemId);
+					})
+			},
+
+			deleteById(itemId) {
+				this.comments.map((comment, index) => {
+					if (comment.id === itemId) {
+						this.comments.splice(index, 1);
+						return;
+					}
+
+					comment.replies.data.map((reply, replyIndex) => {
+						if (reply.id === itemId) {
+							this.comments[index].replies.data.splice(replyIndex, 1);
+							return;
+						}
+					})
+				});
 			}
 		},
 		mounted() {

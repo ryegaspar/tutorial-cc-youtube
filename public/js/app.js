@@ -3244,6 +3244,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3301,6 +3314,36 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       this.replyFormVisible = commentId;
+    },
+    deleteComment: function deleteComment(itemId) {
+      var _this4 = this;
+
+      if (!confirm('Are you sure you want to delete this comment?')) {
+        return;
+      }
+
+      axios["delete"]("/videos/".concat(this.videoUid, "/comments/").concat(itemId.id.toString())).then(function () {
+        _this4.deleteById(itemId);
+      });
+    },
+    deleteById: function deleteById(itemId) {
+      var _this5 = this;
+
+      this.comments.map(function (comment, index) {
+        if (comment.id === itemId) {
+          _this5.comments.splice(index, 1);
+
+          return;
+        }
+
+        comment.replies.data.map(function (reply, replyIndex) {
+          if (reply.id === itemId) {
+            _this5.comments[index].replies.data.splice(replyIndex, 1);
+
+            return;
+          }
+        });
+      });
     }
   },
   mounted: function mounted() {
@@ -96215,7 +96258,25 @@ var render = function() {
                         ]
                       )
                     ])
-                  : _vm._e()
+                  : _vm._e(),
+                _vm._v(" "),
+                _c("li", { staticClass: "list-inline-item" }, [
+                  _vm.$root.user.id === comment.user_id
+                    ? _c(
+                        "a",
+                        {
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.deleteComment(comment.id)
+                            }
+                          }
+                        },
+                        [_vm._v("Delete")]
+                      )
+                    : _vm._e()
+                ])
               ]),
               _vm._v(" "),
               _vm.replyFormVisible === comment.id
@@ -96293,7 +96354,27 @@ var render = function() {
                         _vm._s(comment.created_at_human) +
                         "\n                        "
                     ),
-                    _c("p", [_vm._v(_vm._s(reply.body))])
+                    _c("p", [_vm._v(_vm._s(reply.body))]),
+                    _vm._v(" "),
+                    _c("ul", { staticClass: "list-inline" }, [
+                      _c("li", { staticClass: "list-inline-item" }, [
+                        _vm.$root.user.id === reply.user_id
+                          ? _c(
+                              "a",
+                              {
+                                attrs: { href: "#" },
+                                on: {
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    return _vm.deleteComment(reply.id)
+                                  }
+                                }
+                              },
+                              [_vm._v("Delete")]
+                            )
+                          : _vm._e()
+                      ])
+                    ])
                   ])
                 ])
               })
