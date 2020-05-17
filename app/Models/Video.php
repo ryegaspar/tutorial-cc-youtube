@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Orderable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
@@ -10,6 +11,7 @@ class Video extends Model
 {
     use SoftDeletes;
     use Searchable;
+    use Orderable;
 
     protected $fillable = [
         'title',
@@ -32,11 +34,6 @@ class Video extends Model
     public function getRouteKeyName()
     {
         return 'uid';
-    }
-
-    public function scopeLatestFirst($query)
-    {
-        $query->orderBy('created_at', 'desc');
     }
 
     public function isProcessed()
