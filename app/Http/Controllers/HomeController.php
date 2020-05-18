@@ -24,7 +24,8 @@ class HomeController extends Controller
      */
     public function index(UserRepository $users)
     {
-        dd($users->videosFromSubscriptions(request()->user()));
-        return view('home');
+        $subscriptionVideos = $users->videosFromSubscriptions(request()->user());
+
+        return view('home', compact('subscriptionVideos'));
     }
 }
