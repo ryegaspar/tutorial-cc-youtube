@@ -19,6 +19,10 @@
 									<li class="list-inline-item">
 										<subscribe-button channel-slug="{{ $channel->slug }}"></subscribe-button>
 									</li>
+
+									<li class="list-inline-item">
+										{{ $channel->totalVideoViews() }} video views
+									</li>
 								</ul>
 
 								@if ($channel->description)
