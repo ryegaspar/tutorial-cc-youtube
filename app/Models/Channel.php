@@ -26,6 +26,11 @@ class Channel extends Model
         return $this->hasMany(Video::class);
     }
 
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
     public function getImage()
     {
         if (!$this->image_filename) {
@@ -33,5 +38,10 @@ class Channel extends Model
         }
 
         return config('codetube.buckets.image') . '/profile/' .$this->image_filename;
+    }
+
+    public function subscriptionCount()
+    {
+        return $this->subscriptions->count();
     }
 }

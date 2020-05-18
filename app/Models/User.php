@@ -16,7 +16,9 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name',
+        'email',
+        'password',
     ];
 
     /**
@@ -25,7 +27,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 
     /**
@@ -47,6 +50,16 @@ class User extends Authenticatable
         return $this->hasManyThrough(Video::class, Channel::class);
     }
 
+    public function isSubscribedTo(Channel $channel)
+    {
+        return (bool)$this->subscriptions->where('channel_id', $channel->id)->count();
+    }
+
+    public function ownsChannel(Channel $channel)
+    {
+        return (bool)$this->channel->where('id', $channel->id)->count();
+    }
+
     public function subscriptions()
     {
         return $this->hasMany(Subscription::class);
@@ -55,10 +68,5 @@ class User extends Authenticatable
     public function subscribedChannels()
     {
         return $this->belongsToMany(Channel::class, 'subscriptions');
-    }
-
-    public function isSubscribedTo(Channel $channel)
-    {
-        return (bool) $this->subscriptions->where('channel_id', $channel->id)->count();
     }
 }

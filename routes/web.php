@@ -30,6 +30,8 @@ Route::get('/videos/{video}/votes', 'VideoVoteController@show');
 
 Route::get('/videos/{video}/comments', 'VideoCommentController@index');
 
+Route::get('/subscription/{channel}', 'ChannelSubscriptionController@show');
+
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/upload', 'VideoUploadController@index');
     Route::post('/upload', 'VideoUploadController@store');

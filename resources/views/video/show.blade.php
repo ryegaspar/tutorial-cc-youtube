@@ -49,10 +49,9 @@
 										 alt="{{ $video->channel->name }} image">
 								</a>
 							</div>
-							<div class="media-body">
-								<a href="/channel/{{ $video->channel->slug }}"
-								   class="ml-3">{{ $video->channel->name }}</a>
-								Subscribe button
+							<div class="media-body pl-3">
+								<a href="/channel/{{ $video->channel->slug }}">{{ $video->channel->name }}</a>
+								<subscribe-button channel-slug="{{ $video->channel->slug }}"></subscribe-button>
 							</div>
 						</div>
 					</div>
