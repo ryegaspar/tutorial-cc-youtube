@@ -3194,6 +3194,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3214,6 +3216,23 @@ __webpack_require__.r(__webpack_exports__);
         _this.userSubscribed = response.data.data.user_subscribed;
         _this.canSubscribe = response.data.data.can_subscribe;
       });
+    },
+    subscribe: function subscribe() {
+      this.userSubscribed = true;
+      this.subscribers++;
+      axios.post("/subscription/".concat(this.channelSlug));
+    },
+    unsubscribe: function unsubscribe() {
+      this.userSubscribed = false;
+      this.subscribers--;
+      axios["delete"]("/subscription/".concat(this.channelSlug));
+    },
+    handle: function handle() {
+      if (this.userSubscribed) {
+        this.unsubscribe();
+      } else {
+        this.subscribe();
+      }
     }
   },
   mounted: function mounted() {
@@ -96206,7 +96225,16 @@ var render = function() {
         _vm.canSubscribe
           ? _c(
               "button",
-              { staticClass: "btn btn-sm btn-info", attrs: { type: "button" } },
+              {
+                staticClass: "btn btn-sm btn-info",
+                attrs: { type: "button" },
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    return _vm.handle($event)
+                  }
+                }
+              },
               [
                 _vm._v(
                   "\n        " +

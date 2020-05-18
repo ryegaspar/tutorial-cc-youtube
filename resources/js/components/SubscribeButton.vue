@@ -3,7 +3,9 @@
         {{ this.subscribers }} subscribers &nbsp;
         <button class="btn btn-sm btn-info"
                 type="button"
-                v-if="canSubscribe">
+                v-if="canSubscribe"
+                @click.prevent="handle"
+        >
             {{ userSubscribed ? 'Unsubscribe' : 'Subscribe'}}
         </button>
     </div>
@@ -30,7 +32,29 @@
 						this.userSubscribed = response.data.data.user_subscribed;
 						this.canSubscribe = response.data.data.can_subscribe;
 					})
-			}
+			},
+
+            subscribe() {
+				this.userSubscribed = true;
+				this.subscribers++;
+
+				axios.post(`/subscription/${this.channelSlug}`);
+            },
+
+            unsubscribe() {
+				this.userSubscribed = false;
+				this.subscribers--;
+
+				axios.delete(`/subscription/${this.channelSlug}`);
+            },
+
+            handle() {
+				if (this.userSubscribed) {
+					this.unsubscribe();
+                } else {
+					this.subscribe();
+                }
+            }
 		},
 
 		mounted() {

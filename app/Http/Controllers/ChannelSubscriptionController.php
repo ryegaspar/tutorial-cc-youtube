@@ -18,12 +18,32 @@ class ChannelSubscriptionController extends Controller
         if ($request->user()) {
             $response = array_merge($response, [
                 'user_subscribed' => $request->user()->isSubscribedTo($channel),
-                'can_subscribe' => !$request->user()->ownsChannel($channel),
+                'can_subscribe'   => ! $request->user()->ownsChannel($channel),
             ]);
         }
 
         return response()->json([
             'data' => $response
         ], 200);
+    }
+
+    public function create(Request $request, Channel $channel)
+    {
+        $this->authorize('subscribe', $channel);
+
+        $request->user()->subscriptions()->create([
+            'channel_id' => $channel->id
+        ]);
+
+        return response()->json(null, 200);
+    }
+
+    public function delete(Request $request, Channel $channel)
+    {
+        $this->authorize('unsubscribe', $channel);
+
+        $request->user()->subscriptions()->where('channel_id', $channel->id)->delete();
+
+        return response()->json(null, 200);
     }
 }
