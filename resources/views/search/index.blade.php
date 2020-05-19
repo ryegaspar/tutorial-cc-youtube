@@ -21,13 +21,20 @@
 										</div>
 										<div class="media-body">
 											<a href="/channel/{{ $channel->slug }}"
-											   class="media-heading">{{ $channel->name }}</a>
-											subscription count
+											   class="media-heading"
+											>
+												{{ $channel->name }}
+											</a>
+											<ul class="list-inline">
+												<li>{{ $channel->subscriptionCount() }} subscribers</li>
+											</ul>
 										</div>
 									</div>
 								@endforeach
 							</div>
 						@endif
+
+						<h4>Videos</h4>
 
 						@if ($videos->count())
 							@foreach($videos as $video)
