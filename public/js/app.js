@@ -96352,9 +96352,9 @@ var render = function() {
               ),
               _c("p", [_vm._v(_vm._s(comment.body))]),
               _vm._v(" "),
-              _c("ul", { staticClass: "list-inline" }, [
-                _vm.$root.user.authenticated
-                  ? _c("li", { staticClass: "list-inline-item" }, [
+              _vm.$root.user.authenticated
+                ? _c("ul", { staticClass: "list-inline" }, [
+                    _c("li", { staticClass: "list-inline-item" }, [
                       _c(
                         "a",
                         {
@@ -96376,27 +96376,27 @@ var render = function() {
                           )
                         ]
                       )
+                    ]),
+                    _vm._v(" "),
+                    _c("li", { staticClass: "list-inline-item" }, [
+                      _vm.$root.user.id === comment.user_id
+                        ? _c(
+                            "a",
+                            {
+                              attrs: { href: "#" },
+                              on: {
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  return _vm.deleteComment(comment.id)
+                                }
+                              }
+                            },
+                            [_vm._v("Delete")]
+                          )
+                        : _vm._e()
                     ])
-                  : _vm._e(),
-                _vm._v(" "),
-                _c("li", { staticClass: "list-inline-item" }, [
-                  _vm.$root.user.id === comment.user_id
-                    ? _c(
-                        "a",
-                        {
-                          attrs: { href: "#" },
-                          on: {
-                            click: function($event) {
-                              $event.preventDefault()
-                              return _vm.deleteComment(comment.id)
-                            }
-                          }
-                        },
-                        [_vm._v("Delete")]
-                      )
-                    : _vm._e()
-                ])
-              ]),
+                  ])
+                : _vm._e(),
               _vm._v(" "),
               _vm.replyFormVisible === comment.id
                 ? _c("div", { staticClass: "video-comment clear" }, [
@@ -96475,25 +96475,27 @@ var render = function() {
                     ),
                     _c("p", [_vm._v(_vm._s(reply.body))]),
                     _vm._v(" "),
-                    _c("ul", { staticClass: "list-inline" }, [
-                      _c("li", { staticClass: "list-inline-item" }, [
-                        _vm.$root.user.id === reply.user_id
-                          ? _c(
-                              "a",
-                              {
-                                attrs: { href: "#" },
-                                on: {
-                                  click: function($event) {
-                                    $event.preventDefault()
-                                    return _vm.deleteComment(reply.id)
-                                  }
-                                }
-                              },
-                              [_vm._v("Delete")]
-                            )
-                          : _vm._e()
-                      ])
-                    ])
+                    _vm.$root.user.authenticated
+                      ? _c("ul", { staticClass: "list-inline" }, [
+                          _c("li", { staticClass: "list-inline-item" }, [
+                            _vm.$root.user.id === reply.user_id
+                              ? _c(
+                                  "a",
+                                  {
+                                    attrs: { href: "#" },
+                                    on: {
+                                      click: function($event) {
+                                        $event.preventDefault()
+                                        return _vm.deleteComment(reply.id)
+                                      }
+                                    }
+                                  },
+                                  [_vm._v("Delete")]
+                                )
+                              : _vm._e()
+                          ])
+                        ])
+                      : _vm._e()
                   ])
                 ])
               })

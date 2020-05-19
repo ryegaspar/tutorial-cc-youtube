@@ -24,8 +24,8 @@
                     comment.created_at_human }}
                     <p>{{ comment.body }}</p>
 
-                    <ul class="list-inline">
-                        <li class="list-inline-item" v-if="$root.user.authenticated">
+                    <ul class="list-inline" v-if="$root.user.authenticated">
+                        <li class="list-inline-item">
                             <a href="#" @click.prevent="toggleReplyForm(comment.id)">{{ replyFormVisible === comment.id
                                 ? 'Cancel' : 'Reply'}}</a>
                         </li>
@@ -57,7 +57,7 @@
                             comment.created_at_human }}
                             <p>{{ reply.body }}</p>
 
-                            <ul class="list-inline">
+                            <ul class="list-inline" v-if="$root.user.authenticated">
                                 <li class="list-inline-item">
                                     <a href="#" v-if="$root.user.id === reply.user_id"
                                        @click.prevent="deleteComment(reply.id)">Delete</a>
