@@ -40,7 +40,9 @@
 								{{ $video->viewCount() }} {{ Illuminate\Support\Str::plural('view', $video->viewCount()) }}
 							</div>
 
-							<video-voting video-uid="{{ $video->uid }}"></video-voting>
+							@if ($video->commentsAllowed())
+								<video-voting video-uid="{{ $video->uid }}"></video-voting>
+							@endif
 						</div>
 						<div class="media">
 							<div class="media-left">
