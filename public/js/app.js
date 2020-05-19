@@ -3365,6 +3365,8 @@ __webpack_require__.r(__webpack_exports__);
         _this3.comments.map(function (comment, index) {
           if (comment.id === commentId) {
             _this3.comments[index].replies.data.push(response.data.data);
+
+            return;
           }
         });
 

@@ -109,6 +109,7 @@
 					this.comments.map((comment, index) => {
 						if (comment.id === commentId) {
 							this.comments[index].replies.data.push(response.data.data)
+                            return;
 						}
 					});
 
