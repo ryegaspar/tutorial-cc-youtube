@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ChannelUpdateRequest;
 use App\Jobs\UploadImage;
 use App\Models\Channel;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class ChannelSettingsController extends Controller
 {
